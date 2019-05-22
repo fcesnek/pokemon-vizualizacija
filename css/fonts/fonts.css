@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'PokefontClear';
+    src: URL('PokemonClear.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'PokefontSolid';
+    src: URL('PokemonSolid.ttf') format('truetype');
+}

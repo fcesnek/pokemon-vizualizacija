@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+#pokemon1info,
+#pokemon2info {
+    padding-bottom: 30px;
+}
+
+
+#pokemon1info {
+    background-color: rgb(237, 201, 81);
+}
+
+#pokemon2info {
+    background-color: rgb(224, 71, 83);
+}
+
+#pokemon1name,
+#pokemon2name {
+    font-size: 2.5em;
+    font-family: 'PokefontSolid';
+    color: #5E5B52;
+    letter-spacing: 4px;
+    background-color: rgb(250, 224, 120);
+    border: 1px solid rgb(161, 135, 31);
+    border-radius: 50%;
+    margin: 10px 0;
+}
+
+#pokemon1data,
+#pokemon2data {
+    margin-top: 10px;
+    background-color: rgb(250, 224, 120);
+    border: 1px solid rgb(161, 135, 31);
+    border-radius: 10%;
+}
+
+#pokemon1Input,
+#pokemon2Input {
+    margin-top: 14px;
+    width: 160px;
+    height: 30px;
+    font-size: 14pt;
+    margin-right: 8px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 -12px;
+}
+
+.column {
+    padding: 0 12px;
+    text-align: center;
+}
+
+.column-4 {
+    border: 1px solid rgb(161, 135, 31);
+    border-radius: 5%;
+    flex: 0 0 23%;
+    margin: 0 10px 0 10px;
+}
+
+.column-6 {
+    flex: 0 0 50%;
+}
+
+.legend {
+    font-family: 'Raleway', sans-serif;
+    fill: #333333;
+}
+
+.legend tspan {
+    font-size: 1.1em;
+}
+
+text.axisLabel {
+    font-size: 1.9em;
+}
+
+.tooltip {
+    fill: #333333;
+}
+
+g.y.axis,
+text.label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2em;
+}
+
+g.y.axis {
+    padding-right: 8px;
+}
+
+.butn {
+    margin: 10px 0;
+    cursor: pointer;
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+    border: 1px solid #666;
+}
+
+#pokemon1SearchButton {
+    background: #6fad5e;
+}
+
+#pokemon1SearchButton:hover {
+    background: #7db56e;
+    text-decoration: none;
+}
+
+#pokemon2SearchButton {
+    background: #6fad5e;
+}
+
+#pokemon2SearchButton:hover {
+    background: #7db56e;
+    text-decoration: none;
+}
+
+.searchLabel {
+    margin: 10px 0 10px 0;
+    font-size: 2em;
+}
+
+.searchLabel {
+    font-family: Arial, Helvetica, sans-serif;
+}

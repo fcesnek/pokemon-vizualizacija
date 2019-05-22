@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title>Pokemon Radar Chart</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <link href="./css/fonts/fonts.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+        integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <link href="./css/radar.css" rel="stylesheet" type="text/css">
+    <link href="./css/style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <nav class="nav-icons">
+        <a href="index.html" class="menu-green"><i class="fas fa-grip-lines-vertical"></i><span>Parallel
+                Coordinates</span></a>
+        <a href="radar.html" class="menu-yellow"><i class="fas fa-dharmachakra"></i><span>Radar Chart</span></a>
+        <a href="https://github.com/fcesnek/pokemon-vizualizacija" class="menu-blue"><i
+                class="fas fa-code"></i><span>Code</span></a>
+    </nav>
+    <hr>
+    <div class="container-flex">
+        <div class="row">
+            <div id="pokemon1info" class="column column-4">
+                <h1 id="pokemon1name"></h1>
+                <img id="pokemon1Image" />
+                <div id="pokemon1data"></div>
+                <div class="searchBox">
+                    <p class="searchLabel">SEARCH:</p>
+                    <div class="row">
+                        <input list="pokemon1Datalist" name="pokemon1Search" id="pokemon1Input" class="column">
+                        <datalist id="pokemon1Datalist"></datalist>
+                        <a class="butn column" id="pokemon1SearchButton">DISPLAY</a>
+                    </div>
+                </div>
+            </div>
+            <div class="radarChart column column-6"></div>
+            <div id="pokemon2info" class="column column-4">
+                <h1 id="pokemon2name"></h1>
+                <img id="pokemon2Image" />
+                <div id="pokemon2data"></div>
+                <p class="searchLabel">SEARCH:</p>
+                <div class="row">
+                    <input list="pokemon2Datalist" name="pokemon2Search" id="pokemon2Input" class="column">
+                    <datalist id="pokemon2Datalist"></datalist>
+                    <a class="butn column" id="pokemon2SearchButton">DISPLAY</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./scripts/barchart.js"></script>
+    <script src="./scripts/libs/radarchart.js"></script>
+    <script src="./scripts/radar.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let pokemonId = urlParams.get('id');
+
+        let pokeData = [
+            [],
+            []
+        ]
+        const allowedKeys = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"]
+        const barChartKeys = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed", "Total"]
+
+        if (!pokemonId) {
+            d3.select("#pokemon1Image").attr("src", "./assets/pikachu.png")
+            d3.select("#pokemon2Image").attr("src", "./assets/pikachu.png")
+        }
+        var pokemon1input = document.querySelector('#pokemon1Input');
+        var pokemon1SearchButton = document.querySelector("#pokemon1SearchButton");
+
+        var pokemon2input = document.querySelector('#pokemon2Input');
+        var pokemon2SearchButton = document.querySelector("#pokemon2SearchButton");
+
+        d3.json("./data/pokemon.json", function (error, data) {
+            if (!pokemon2input.value) d3.select("#pokemon2Image").attr("src", "./assets/pikachu.png")
+
+            d3.select("#pokemon1Datalist").selectAll("option").data(data).enter().append("option").attr("value",
+                function (d) {
+                    return d.Name
+                })
+            d3.select("#pokemon2Datalist").selectAll("option").data(data).enter().append("option").attr("value",
+                function (d) {
+                    return d.Name
+                })
+
+            pokemon1SearchButton.addEventListener("click", function () {
+                pokemonId = findPokemonByName(pokemon1input.value, data)
+                drawAll(data, pokemonId, 1)
+            })
+
+            pokemon2SearchButton.addEventListener("click", function () {
+                pokemonId = findPokemonByName(pokemon2input.value, data)
+                drawAll(data, pokemonId, 2)
+            })
+
+            drawAll(data, pokemonId, 1)
+        })
+    </script>
+</body>
+
+</html>

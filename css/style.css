@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-size: 11px;
+    font-weight: 300;
+    fill: #242424;
+}
+
+hr {
+    width: 800px;
+    margin: 0 auto;
+}
+
+.container-flex {
+    width: 100%;
+    max-width: 1500px;
+    padding: 0 12px;
+    margin: 20px auto;
+}
+
+.nav-icons {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-size: 0;
+    margin-bottom: 30px;
+}
+
+.nav-icons a {
+    margin: 0 auto;
+    display: inline-block;
+    color: #ffffff;
+    background-color: #232526;
+    font-size: 40px;
+    font-weight: bold;
+    box-shadow: 1px 2px 1px 0 rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    width: 200px;
+    height: 150px;
+}
+
+.nav-icons a:hover {
+    opacity: 0.92;
+}
+
+.nav-icons a i {
+    margin: 10px;
+    display: block;
+    font-size: 1.5em;
+    line-height: 1.5;
+}
+
+.nav-icons a span {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 0;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+
+.nav-icons a.menu-blue {
+    background-color: #57b2d8;
+}
+
+.nav-icons a.menu-blue i {
+    color: #3e8fb1;
+}
+
+.nav-icons a.menu-green {
+    background-color: #8ccc7a;
+}
+
+.nav-icons a.menu-green i {
+    color: #6fad5e;
+}
+
+.nav-icons a.menu-yellow {
+    background-color: #dadf50;
+}
+
+.nav-icons a.menu-yellow i {
+    color: #babe4a;
+}
+
+.end {
+    margin-top: 20px;
+}
