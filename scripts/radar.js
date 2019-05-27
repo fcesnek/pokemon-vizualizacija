@@ -12,15 +12,6 @@ function drawAll(data, id, pokemonNum) {
     d3.select(`#pokemon${pokemonNum}Image`).attr("src", `https://www.serebii.net/art/th/${id}.png`)
     pokeData[pokemonNum - 1] = []
 
-    if (pokemonNum == 2) {
-        pokeData[0] = []
-        for (key in allowedKeys) {
-            pokeData[0].push({
-                axis: allowedKeys[key],
-                value: 0
-            })
-        }
-    }
     for (key in allowedKeys) {
         pokeData[pokemonNum - 1].push({
             axis: allowedKeys[key],
