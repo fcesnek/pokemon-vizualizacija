@@ -7,12 +7,20 @@ function drawAll(data, id, pokemonNum) {
         },
         widthRadar = Math.min(700, window.innerWidth - 10) - marginRadar.left - marginRadar.right,
         heightRadar = Math.min(widthRadar, window.innerHeight - marginRadar.top - marginRadar.bottom - 20);
-    
+
     d3.select(`#pokemon${pokemonNum}name`).html(data[id - 1]["Name"])
     d3.select(`#pokemon${pokemonNum}Image`).attr("src", `https://www.serebii.net/art/th/${id}.png`)
-
     pokeData[pokemonNum - 1] = []
 
+    if (pokemonNum == 2) {
+        pokeData[0] = []
+        for (key in allowedKeys) {
+            pokeData[0].push({
+                axis: allowedKeys[key],
+                value: 0
+            })
+        }
+    }
     for (key in allowedKeys) {
         pokeData[pokemonNum - 1].push({
             axis: allowedKeys[key],
@@ -20,7 +28,7 @@ function drawAll(data, id, pokemonNum) {
         })
     }
     var colorRadar = d3.scale.ordinal()
-        .range(["#EDC951", "#CC333F"]);
+        .range(["#EDC951", "#6fad5e"]);
 
     var radarChartOptions = {
         w: widthRadar - 100,
@@ -32,8 +40,9 @@ function drawAll(data, id, pokemonNum) {
         color: colorRadar
     };
 
+    console.log(pokeData)
     RadarChart(".radarChart", pokeData, radarChartOptions);
-    drawBarChart(pokeData[pokemonNum - 1], barChartKeys, `#pokemon${pokemonNum}data`, pokemonNum)
+    drawBarChart(pokeData[pokemonNum - 1], allowedKeys, `#pokemon${pokemonNum}data`, pokemonNum)
 }
 
 function findPokemonByName(name, data) {

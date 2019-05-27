@@ -64,7 +64,6 @@
             []
         ]
         const allowedKeys = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"]
-        const barChartKeys = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed", "Total"]
 
         if (!pokemonId) {
             d3.select("#pokemon1Image").attr("src", "./assets/pikachu.png")
@@ -97,8 +96,8 @@
                 pokemonId = findPokemonByName(pokemon2input.value, data)
                 drawAll(data, pokemonId, 2)
             })
-
-            drawAll(data, pokemonId, 1)
+            if (pokemonId)
+                drawAll(data, pokemonId, 1)
         })
     </script>
 </body>
