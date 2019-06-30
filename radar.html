@@ -19,12 +19,11 @@
         <a href="index.html" class="menu-green"><i class="fas fa-grip-lines-vertical"></i><span>Parallel
                 Coordinates</span></a>
         <a href="radar.html" class="menu-yellow"><i class="fas fa-dharmachakra"></i><span>Radar Chart</span></a>
-        <a href="https://github.com/fcesnek/pokemon-vizualizacija" class="menu-blue"><i
-                class="fas fa-code"></i><span>Code</span></a>
     </nav>
     <hr>
     <div class="container-flex">
         <div class="row">
+            <!-- Informacije o prvom Pokemonu-->
             <div id="pokemon1info" class="column column-4">
                 <h1 id="pokemon1name"></h1>
                 <img id="pokemon1Image" />
@@ -38,7 +37,9 @@
                     </div>
                 </div>
             </div>
+            <!-- Radarski graf -->
             <div class="radarChart column column-6"></div>
+            <!-- Informacije o drugom Pokemonu -->
             <div id="pokemon2info" class="column column-4">
                 <h1 id="pokemon2name"></h1>
                 <img id="pokemon2Image" />
@@ -56,19 +57,27 @@
     <script src="./scripts/libs/radarchart.js"></script>
     <script src="./scripts/radar.js"></script>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        let pokemonId = urlParams.get('id');
 
-        let pokeData = [
+        // Dohvaćanje ID-ja iz URL-a
+        const urlParams = new URLSearchParams(window.location.search);
+        var pokemonId = urlParams.get('id');
+
+        // Podaci koji će se proslijediti RadarChart funkciji
+        var pokeData = [
             [],
             []
         ]
+
+        // Osi na radarskom grafu
         const allowedKeys = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"]
 
+        //Ako ne postoji ID, postave se placeholder slike za svakog Pokemona
         if (!pokemonId) {
             d3.select("#pokemon1Image").attr("src", "./assets/pikachu.png")
             d3.select("#pokemon2Image").attr("src", "./assets/pikachu.png")
         }
+
+        // Dohvaćanje gumbova i polja za pretragu
         var pokemon1input = document.querySelector('#pokemon1Input');
         var pokemon1SearchButton = document.querySelector("#pokemon1SearchButton");
 
@@ -76,8 +85,10 @@
         var pokemon2SearchButton = document.querySelector("#pokemon2SearchButton");
 
         d3.json("./data/pokemon.json", function (error, data) {
+            // Ako u polju za pretragu za drugog Pokemona ne postoji vrijednost, postavi se placeholder slika
             if (!pokemon2input.value) d3.select("#pokemon2Image").attr("src", "./assets/pikachu.png")
 
+            // Popunjavanje vrijednosti datalist elementa svim imenima Pokemona iz skupa podataka
             d3.select("#pokemon1Datalist").selectAll("option").data(data).enter().append("option").attr("value",
                 function (d) {
                     return d.Name
@@ -87,6 +98,8 @@
                     return d.Name
                 })
 
+            // Kada se klikne na button, dohvati se ID Pokemona pomoću upisanog imena i iscrtaju
+            // se svi elementi za tog Pokemona
             pokemon1SearchButton.addEventListener("click", function () {
                 pokemonId = findPokemonByName(pokemon1input.value, data)
                 drawAll(data, pokemonId, 1)
@@ -96,6 +109,8 @@
                 pokemonId = findPokemonByName(pokemon2input.value, data)
                 drawAll(data, pokemonId, 2)
             })
+
+            // Ako postoji ID (dohvaćen iz URL-a), vizualiziraju se podaci za tog Pokemona
             if (pokemonId)
                 drawAll(data, pokemonId, 1)
         })

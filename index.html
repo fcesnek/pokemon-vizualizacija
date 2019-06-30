@@ -1,40 +1,36 @@
 <!DOCTYPE html>
-<!-- http://bl.ocks.org/eesur/1a2514440351ec22f176 -->
-<!-- http://syntagmatic.github.com/parallel-coordinates/ -->
-
 <head>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
     integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 
   <link rel="stylesheet" type="text/css" href="./css/style.css">
-  <link rel="stylesheet" type="text/css" href="./css/pokemon.css">
+  <link rel="stylesheet" type="text/css" href="./css/parcoords.css">
   <link rel="stylesheet" type="text/css" href="./css/checkbox.css">
   <link rel="stylesheet" type="text/css" href="./css/fonts/fonts.css">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min.js"></script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
   <script src="./scripts/libs/d3.parcoords.js"></script>
   <script src="./scripts/libs/divgrid.js"></script>
 
 </head>
 
 <body>
-
+  <!-- NAVIGACIJA -->
   <nav class="nav-icons">
     <a href="index.html" class="menu-green"><i class="fas fa-grip-lines-vertical"></i><span>Parallel
         Coordinates</span></a>
     <a href="radar.html" class="menu-yellow"><i class="fas fa-dharmachakra"></i><span>Radar Chart</span></a>
-    <a href="https://github.com/fcesnek/pokemon-vizualizacija" class="menu-blue"><i
-        class="fas fa-code"></i><span>Code</span></a>
   </nav>
-
   <hr>
-
+  <!-- GRAF S PARALELNIM KOORDINATAMA -->
   <div id="parallel-coords" class="parcoords">
   </div>
+  <!-- GUMBOVI ZA FILTRIRANJE OSI -->
   <div id="filter">
     <ul id="filterList">
     </ul>
   </div>
   <hr>
+  <!-- DIVGRID -->
   <div class="container">
     <div id="grid">
       <div>
@@ -46,21 +42,30 @@
   <div class="end"></div>
 
   <script>
-    let defaultVals = ["#", "Type 1", "Type 2", "Legendary"]
-    let hideAxisVals = ["#"]
-    let filterKeys = ["Type 1", "Type 2", "Total", "HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed",
+    
+    // Polja za filtriranje osi (nazivi osi u polju će biti skriveni)
+    var defaultVals = ["#", "Type 1", "Type 2", "Legendary"]
+    var hideAxisVals = ["#"]
+
+    // Nazivi svih osi koje se mogu prikazati na grafu
+    var filterKeys = ["Type 1", "Type 2", "Total", "HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed",
       "Generation", "Legendary"
     ]
+
+    // Boje grafa
     var colorscheme = d3.scale.linear()
       .domain([0, 7])
       .range(["steelblue", "yellow"])
       .interpolate(d3.interpolateLab);
+
     var grid = d3.divgrid();
     var parcoords;
 
-    d3.select("#filterList").attr("class", "ks-cboxtags")
-    let unorderedList = d3.select("#filterList").selectAll("li").data(filterKeys).enter().append("li")
+    // Dodavanje li elemenata za checkboxove za odabir osi
+    d3.select("#filterList").attr("class", "cbox")
+    var unorderedList = d3.select("#filterList").selectAll("li").data(filterKeys).enter().append("li")
 
+    // Dodavanje li elementima inpute, te pripadajuće tipove, klase, id-jeve, vrijednosti i labele
     unorderedList.each(function (d, i) {
       d3.select(this)
         .append("input")
@@ -84,22 +89,32 @@
           return d
         })
     })
-    let checkBoxes = d3.select("#filterList").selectAll("input")
+
+    // Odabir svih kreiranih checkboxova
+    var checkBoxes = d3.select("#filterList").selectAll("input")
 
     d3.json('./data/pokemon.json', function (error, data) {
+      // Dodavanje listenera na svaki checkbox, da se na promjenu stanja pozove funkcija
+      // koja će ažurirati polja za filtriranje osi 
       checkBoxes.on("change", function () {
         cbUpdate(data)
       })
+
+      // Prvotno iscrtavanja grafa
       drawParCoords(data)
     });
 
+    // Funkcija koja provjerava svaki checkbox, te u slučaju da os nije označena i već nije u polju,
+    // stavlja tu os u polje osi koje trebaju biti skrivene  ili u slučaju da je checkbox označen, miče naziv
+    // te osi iz polja osi koje se trebaju prikazati (dakle, označeni checkboxovi su osi koje 
+    // se prikazuju, neoznačeni osi koje se skrivaju). Nakon ažuriranja polja, ponovno se iscrtava graf
     function cbUpdate(data) {
       checkBoxes.each(function (d, i) {
         if (!d3.select(this).property("checked")) {
           if (!hideAxisVals.includes(d))
             hideAxisVals.push(d)
         } else {
-          for (let i = 0; i < hideAxisVals.length; i++) {
+          for (var i = 0; i < hideAxisVals.length; i++) {
             if (hideAxisVals[i] == d) {
               hideAxisVals.splice(i, 1);
             }
@@ -109,10 +124,20 @@
       drawParCoords(data)
     }
 
+    // Funkcija za iscrtavanje grafa
     function drawParCoords(data) {
+      // U slučaju odabira nove osi ili nekog ažuriranje, potrebno je prvo ukloniti graf, a zatim
+      // ga ponovno nacrtati
       if (d3.select("#parallel-coords")) {
         d3.select("#parallel-coords").selectAll("*").remove()
       }
+      // Iscrtavanje grafa na zadanom elementu sa podacima proslijeđenim funkciji.
+      // Osi koje se skrivaju ovise o duljini polja hideAxisVals (ako je duljina polja 1
+      // iscrtavaju se defaultne osi, inače sve osi koje se ne nalaze u polju hideAxisVals)
+
+      // IZVORI: 
+      // http://bl.ocks.org/eesur/1a2514440351ec22f176
+      // http://syntagmatic.github.com/parallel-coordinates/
       parcoords = d3.parcoords()("#parallel-coords")
         .data(data)
         .hideAxis(hideAxisVals.length == 1 ? defaultVals : hideAxisVals)
@@ -125,17 +150,33 @@
         .brushMode("1D-axes")
         .reorderable();
 
+      // Iscrtavanje tablice
       drawGrid(data)
 
+      // Ažuriranje tablice kad se označe elementi na grafu
       parcoords.on("brush", function (d) {
         drawGrid(d)
       });
+
+      // Ažuriranje tablice kada se upiše ime u polje za pretragu
       d3.select("#pokemonname").on("input", function () {
         drawGrid(data, this.value)
       });
     }
 
+    // Funkcija za crtanje tablice
     function drawGrid(data, text) {
+      // Odabir div-a u kojem će se crtati tablica, te podaci koji će se nalaziti u tablici
+      // U slučaju da postoji neki tekst, u tablici će se nalaziti svi Pokemoni čije ime
+      // sadržava tekst u polju za pretragu. Ako tekst ne postoji, u tablici će se nalaziti
+      // prvih 20 podataka koji odgovaraju kriterijima.
+      // Svakom retku dodaje se mouseover listener koji će označiti taj podatak na grafu i pretvoriti
+      // izgled miša, mouseout listener koji će ukloniti efekt označavanja, te click listener
+      // koji će navigirati do druge vizualizacije zajedno s id-jem Pokemona kao query string
+
+      // IZVORI:
+      // https://gist.github.com/syntagmatic/3687826
+      // http://bl.ocks.org/eesur/1a2514440351ec22f176
       d3.select("#grid")
         .datum(text ? data.filter(function (pokemon) {
           return pokemon.Name.toLowerCase().includes(text.toLowerCase())
