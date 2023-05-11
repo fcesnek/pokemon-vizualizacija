@@ -42,23 +42,48 @@
   <div class="end"></div>
 
   <script>
-    
     // Polja za filtriranje osi (nazivi osi u polju će biti skriveni)
-    var defaultVals = ["#", "Type 1", "Type 2", "Legendary"]
-    var hideAxisVals = ["#"]
+    var allVals = ["sofifa_id",
+                "short_name",
+                "age",
+                "height_cm",
+                "nationality",
+                "club_name",
+                "overall",
+                "value_eur",
+                "player_positions",
+                "pace",
+                "shooting",
+                "passing",
+                "dribbling",
+                "defending",
+                "physic",
+                "gk_diving",
+                "gk_handling",
+                "gk_kicking",
+                "gk_reflexes",
+                "gk_speed",
+                "gk_positioning",
+                "attacking_finishing",
+                "attacking_short_passing",
+                "skill_ball_control",
+                "movement_acceleration",
+                "movement_sprint_speed",
+                "movement_reactions",
+                "movement_balance",
+                "power_long_shots"]
+    var valsToShow = ["age", "pace", "overall", "nationality"]
 
     // Nazivi svih osi koje se mogu prikazati na grafu
-    var filterKeys = ["Type 1", "Type 2", "Total", "HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed",
-      "Generation", "Legendary"
-    ]
+    var filterKeys = ["age", "pace", "overall", "defending"]
 
-    // Boje grafa
+    // Boje grafa - treba promijeniti
     var colorscheme = d3.scale.linear()
       .domain([0, 7])
       .range(["steelblue", "yellow"])
       .interpolate(d3.interpolateLab);
 
-    var grid = d3.divgrid();
+    var grid = d3.divgrid().columns(["short_name", "age", "nationality", "overall"]);
     var parcoords;
 
     // Dodavanje li elemenata za checkboxove za odabir osi
@@ -77,7 +102,7 @@
           return d;
         })
         .property("checked", function (d) {
-          return hideAxisVals.includes(d) || defaultVals.includes(d) ? false : true;
+          return valsToShow.includes(d);
         })
 
       d3.select(this)
@@ -93,7 +118,7 @@
     // Odabir svih kreiranih checkboxova
     var checkBoxes = d3.select("#filterList").selectAll("input")
 
-    d3.json('./data/pokemon.json', function (error, data) {
+    d3.json('./data/test2.json', function (error, data) {
       // Dodavanje listenera na svaki checkbox, da se na promjenu stanja pozove funkcija
       // koja će ažurirati polja za filtriranje osi 
       checkBoxes.on("change", function () {
@@ -110,13 +135,14 @@
     // se prikazuju, neoznačeni osi koje se skrivaju). Nakon ažuriranja polja, ponovno se iscrtava graf
     function cbUpdate(data) {
       checkBoxes.each(function (d, i) {
-        if (!d3.select(this).property("checked")) {
-          if (!hideAxisVals.includes(d))
-            hideAxisVals.push(d)
+        if (d3.select(this).property("checked")) {
+          if (!valsToShow.includes(d)) {
+            valsToShow.push(d)
+          } 
         } else {
-          for (var i = 0; i < hideAxisVals.length; i++) {
-            if (hideAxisVals[i] == d) {
-              hideAxisVals.splice(i, 1);
+          for (var i = 0; i < valsToShow.length; i++) {
+            if (valsToShow[i] == d) {
+              valsToShow.splice(i, 1);
             }
           }
         }
@@ -131,6 +157,12 @@
       if (d3.select("#parallel-coords")) {
         d3.select("#parallel-coords").selectAll("*").remove()
       }
+      var colorgen = d3.scale.ordinal().range(["#a6cee3","#1f78b4","#b2df8a","#33a02c",
+            "#fb9a99","#e31a1c","#fdbf6f","#ff7f00",
+            "#cab2d6","#6a3d9a","#ffff99","#b15928"]);
+
+      var color = function(d) { return colorgen(d.group); };
+      var hideAxisVals = allVals.filter(x => !valsToShow.includes(x))
       // Iscrtavanje grafa na zadanom elementu sa podacima proslijeđenim funkciji.
       // Osi koje se skrivaju ovise o duljini polja hideAxisVals (ako je duljina polja 1
       // iscrtavaju se defaultne osi, inače sve osi koje se ne nalaze u polju hideAxisVals)
@@ -140,12 +172,11 @@
       // http://syntagmatic.github.com/parallel-coordinates/
       parcoords = d3.parcoords()("#parallel-coords")
         .data(data)
-        .hideAxis(hideAxisVals.length == 1 ? defaultVals : hideAxisVals)
+        .hideAxis(hideAxisVals) // ovdje urediti logiku jer ima više stvari koje treba sakriti
         .composite("darken")
-        .color(function (d) {
-          return colorscheme(d.Generation);
-        })
-        .alpha(0.2)
+        .color(color)
+        .alpha(0.25)
+        .mode("queue")
         .render()
         .brushMode("1D-axes")
         .reorderable();
@@ -179,7 +210,7 @@
       // http://bl.ocks.org/eesur/1a2514440351ec22f176
       d3.select("#grid")
         .datum(text ? data.filter(function (pokemon) {
-          return pokemon.Name.toLowerCase().includes(text.toLowerCase())
+          return pokemon.short_name.toLowerCase().includes(text.toLowerCase())
         }) : data.slice(0, 20))
         .call(grid)
         .selectAll(".row")
