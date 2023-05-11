@@ -42,17 +42,14 @@
   <div class="end"></div>
 
   <script>
-    
     // Polja za filtriranje osi (nazivi osi u polju će biti skriveni)
-    var defaultVals = ["#", "Type 1", "Type 2", "Legendary"]
-    var hideAxisVals = ["#"]
+    var defaultVals = ["sofifa_id", "nationality", "club_name"]
+    var hideAxisVals = ["sofifa_id"]
 
     // Nazivi svih osi koje se mogu prikazati na grafu
-    var filterKeys = ["Type 1", "Type 2", "Total", "HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed",
-      "Generation", "Legendary"
-    ]
+    var filterKeys = ["nationality", "club_name"]
 
-    // Boje grafa
+    // Boje grafa - treba promijeniti
     var colorscheme = d3.scale.linear()
       .domain([0, 7])
       .range(["steelblue", "yellow"])
@@ -93,7 +90,7 @@
     // Odabir svih kreiranih checkboxova
     var checkBoxes = d3.select("#filterList").selectAll("input")
 
-    d3.json('./data/pokemon.json', function (error, data) {
+    d3.json('./data/players.json', function (error, data) {
       // Dodavanje listenera na svaki checkbox, da se na promjenu stanja pozove funkcija
       // koja će ažurirati polja za filtriranje osi 
       checkBoxes.on("change", function () {
@@ -140,10 +137,10 @@
       // http://syntagmatic.github.com/parallel-coordinates/
       parcoords = d3.parcoords()("#parallel-coords")
         .data(data)
-        .hideAxis(hideAxisVals.length == 1 ? defaultVals : hideAxisVals)
+        .hideAxis(hideAxisVals.length == 1 ? defaultVals : hideAxisVals) // ovdje urediti logiku jer ima više stvari koje treba sakriti
         .composite("darken")
         .color(function (d) {
-          return colorscheme(d.Generation);
+          return colorscheme(d.Generation); // nemaš generaciju, trebaš obojati po nekom drugom parametru
         })
         .alpha(0.2)
         .render()
